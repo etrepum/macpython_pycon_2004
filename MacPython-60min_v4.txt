@@ -1,0 +1,82 @@
+===============================================
+PyCon DC 2004 Proposal: 60 Minutes of MacPython
+===============================================
+
+:Author:
+  Bob Ippolito
+:Email:
+  bob@redivi.com
+:Time slot:
+  60 minutes
+
+OS X is a complicated hybrid of technologies from NeXT, MacOS, \*BSD.  Unforunately for developers,
+this means that there are more APIs and buzzwords than you can shake a stick at.  60 minutes of MacPython 
+is a whirlwind tour of how to hack all those neat frameworks from Python.  This talk is for anyone who owns a Mac, or is interested in how things are "on the other side".  Here's an outline of what I want to cover:
+
+**Prerequisites**
+  * A Mac, running OS X 10.2 or later.
+  * "Framework build" of Python 2.3.0 or later (will come back to what a framework build is).  Comes with 
+    OS X 10.3, must be downloaded separately otherwise.  Fink version is not a framework build, and can not
+    take advantage of most platform specific features.
+
+**Darwin**
+
+  Description from http://developer.apple.com/darwin/
+
+  Beneath the appealing, easy-to-use interface of Mac OS X is a rock-solid foundation that is engineered for stability, reliability, and performance. This foundation is a core operating system commonly known as Darwin. Darwin integrates a number of technologies, most importantly Mach 3.0, operating-system services based on 4.4BSD (Berkeley Software Distribution), high-performance networking facilities, and support for multiple integrated file systems.
+
+  * POSIX compliance - It is, everything works.
+  * Property Lists - Configuration / metadata for just about everything.  
+    XML and NeXT flavors found in the wild.  Demonstrate ``plistlib``.
+  * Objective C - NeXT's favorite language.  Show some Objective C code for using a Property List, show how
+    it translates into ``PyObjC``.
+  * Bundles - Localizable folder structures for any sort of file, especially applications.  Looks opaque
+    from the Finder.  Give a ``PyObjC`` example of NSBundle.  Use Python.framework as an example, discuss
+    the difference between frameworks and shared libraries.
+
+**Apple Events**
+
+  Description from http://developer.apple.com/documentation/Carbon/Reference/Apple_Event_Manager/ 
+
+  An Apple event is a high-level event that conforms to the Apple Event Interprocess Messaging Protocol. The Apple Event Manager sends Apple events between applications on the same computer or between applications on remote computers.
+
+  Applications typically use Apple events to request services and information from other applications or to provide services and information in response to such requests. All applications are required to support four Apple events that the Finder sends. These events are Open Application, Open Documents, Print Documents, and Quit Application.
+
+  * Show Apple's Script Editor and some "read only" AppleScript code (as opposed to Perl's "write only") - 
+    with debugging on, to show all the nasty four character codes going on in the background.
+  * ``aeve`` - the Pythonic way to do AppleEvents.  Demonstrate automation of ``iTunes`` and ``Finder`` 
+    from the interpreter.  Looks like Python!  Note that sometimes a different object model is required
+    for "relational" events, but ``aeve`` can to that too (well.. by PyCon).
+  * Mention other high level AppleEvent bridges - gensuitemodule (standard library, will be superseded),
+    AppScripting (designed for "relational" events).
+
+**Cocoa**
+  
+  Description from http://developer.apple.com/cocoa/
+
+  Cocoa is a rich set of object-oriented frameworks that allow for the most rapid development of applications on Mac OS X. Using Cocoa, developers can create full-featured applications in a fraction of the time they would need for procedural languages. Applications from UNIX and other OS platforms can also be brought to Mac OS X quickly by using Cocoa to build state-of-the-art Aqua user interfaces while retaining most existing core code.
+
+  * Show off some existing apps such as ``ReSTEdit``, ``RegexPlor``, ``WebServicesTool`` (list of 
+    interesting apps subject to change by PyCon!).
+  * Build a web browser from scratch with Interface Builder and ``PyObjC`` in less than 5 minutes.
+  * Mention Cocoa Bindings - 10.3 only - but makes building applications even easier.
+  * Show some kind of Rendezvous example (need a spy or two in the audience).
+  * Talk about GNUStep Renaissance (XML instead of Apple nib files, cross-platform).  Show modified
+    ``DrawBot`` with ``Renaissance`` widgets.  Mention that ``PyObjC`` is portable to ``GNUStep`` 
+    (well.. by PyCon).
+  * Show off some ``MusicKit`` and ``CRAudioUnits`` examples (both are Objective C wrappers for 
+    ``CoreAudio``) if time allows and speakers are available.
+
+**Cross-Platform Toolkits** (shown as a list, noting bugs, not demonstrated)
+  * Tk
+  * wxPython
+  * pyQt
+  * pygame
+  * X11
+
+**Community**
+  * MacPython iChat/AIM channel
+  * pythonmac-sig
+  * pythonmac.org wiki and FAQ
+
+... I'm sure I'll have plenty of questions to answer, which should take me up to 60 minutes :)
