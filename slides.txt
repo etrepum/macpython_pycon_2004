@@ -1,0 +1,571 @@
+60 Minutes of MacPython
+-----------------------
+
+Author
+    Bob Ippolito
+
+Conference
+    PyCon DC, March 2004
+
+Intended Audience
+-----------------
+
+- Python developers using Mac OS X 10.2 or later
+- Spies from the Linux and Win32 camps
+
+Topics
+------
+
+- What is MacPython?
+- MacPython IDEs
+- Darwin
+- Apple Events
+- Cocoa
+- Cross-Platform
+- Community
+- What's Next
+
+What is MacPython?
+------------------
+
+- It's just Python
+- Compiled from the same Python source tree
+
+MacPython's Past
+----------------
+
+- MacPython was for "Classic" MacOS
+- Guido used to own a Mac
+- ... then Jack took over
+- Uses WASTE for text widgets
+- ... and GUSI to act more like \*NIX
+- Still exists, but not as actively maintained
+- ... though apparently it does have *some* users
+
+MacPython Now
+-------------
+
+- Has some rough edges
+- ... but we're working on it!
+- Inherits the good stuff from BSD
+- Has many new APIs of its own
+- Ancient MacOS code happens to work
+- ... and we still use a lot of it
+
+MacPython Tools
+---------------
+
+BuildApplet
+  Turns simple scripts into applications
+PackageManager
+  Installs a few packages from a central db
+PythonLauncher
+  Allows double-clicking of .py files
+PythonIDE
+  Old MacOS IDE, unmaintained
+
+... all of these are being replaced!
+
+How do I get it?
+----------------
+
+**OS X 10.2**
+
+- DO NOT USE Apple Python 2.2.0
+- Get MacPython-Jaguar 2.3
+
+**OS X 10.3**
+
+- PLEASE USE Apple Python 2.3.0
+- ... and don't install any other Python
+- Also get the MacPython-Addons
+
+MacPython IDEs
+--------------
+
+- General Purpose IDEs
+- Aqua Python IDEs
+- Other Python IDEs
+
+Emacs
+-----
+
+.. image:: ../Emacs.jpg
+
+Vim
+---
+
+.. image:: ../Vim.jpg
+
+SubEthaEdit
+-----------
+
+.. image:: ../SubEthaEdit.jpg
+
+Xcode
+-----
+
+.. image:: ../Xcode.jpg
+
+BBEdit
+------
+
+.. image:: ../BBEdit.jpg
+
+PythonIDE
+---------
+
+.. image:: ../PythonIDE.jpg
+
+PyOXIDE
+-------
+
+.. image:: ../PyOXIDE.jpg
+
+X11 Python Editors are Ugly
+---------------------------
+
+.. image:: ../WingIDE.jpg
+
+Cross-Platform Toolkits Are Broken
+----------------------------------
+
+.. image:: ../IDLETclTkAqua.jpg
+
+Darwin
+------
+
+.. image:: ../darwin.jpg
+
+- os.name == 'posix' ... but it's not quite BSD
+- Forking Files
+- Three Flavors of Property Lists
+- Objective C?
+- Bundles Bundles Bundles
+
+os.name == 'posix'
+------------------
+
+**So, it is a \*NIX?**
+
+- Typically acts like any other BSD
+- Especially in modules such as os, sys, socket
+- ... but there's a lot more to it
+
+... but it's not quite BSD
+--------------------------
+
+**HFS+ Thinks Different**
+
+- Case insensitive file system
+- Files can have multiple forks
+
+**Inherited from NeXT**
+
+- XML property lists for configuration
+- Bundles and Frameworks
+- dyld is not your average linker
+- Tons of new APIs
+
+Forking Files
+-------------
+
+**Resource forks are Not For POSIX**
+
+- Files may have a resource fork
+- Not really useful without Carbon APIs
+- POSIX layer sees only the data fork!
+- Be careful not to lose them when copying files!
+
+**But you can get at one if you need to**::
+
+    file(filename + '../namedfork/rsrc')
+
+Three Flavors of Property Lists
+-------------------------------
+
+* Binary
+* Text
+* XML
+
+Binary Property Lists
+---------------------
+
+- Deprecated, but still used
+- Object serialization (pickle)
+- Old Nib files (GUI pickle)
+
+::
+
+    >>> open('keyedobjects.nib').read()
+    'bplist00\xd4\x00\x01\x00\x02\x00\x03\x00\x04\x00\x05\x00\x06\x00\x07
+    \x00\nY$archiverX$versionT$topX$objects_\x10\x0fNSKeyedArchiver\x12\x00
+    \x01\x86\xa0\xd1\x00\x08\x00\t]IB.objectdata\x80\x01\xaf\x11\x04#\x00
+    \x0b\x00\x0c\x00+\x00/\x003\x00:\x00=\x00?\x00C\x00G\x00\xa5\x00\xab\x00
+    \xbb\x00\xc2\x00\xc3\x00\xc4\x00\xc9\x00\xca\x00\xcb\x00\xcf\x00\xd1\x00
+    \xd2\x00\xd5\x00\xd7\x00\xdb\x00\xde\x00\xe1\x00\xe2\x00\xe3\x00\xe5\x00
+    \xe8\x00\xec\x00\xef\x00\xf0\x00\xf1\x00\xf3\x00\xf7\x00\xfb\x00\xff\x01
+    \x00\x01\x01\x01\x03\x01\x06\x01\n\x01\x0b\x01\x0c\x01\r\x01\x10\x01\x13
+    \x01\x0b\x01\x14\x01\x15\x01\x18\x01\x1a\x01\x1b\x01\x1c\x01 \x01#\x01$
+    ...'
+
+Text Property Lists
+-------------------
+
+- Deprecated, but still used
+- Looks sort of like YAML
+- StartupItems (like /etc/init.d)
+
+::
+
+    {
+        Description     = "uControl";
+        Provides        = ("uControl");
+        /* depend on something so that we don't come too early */
+        Requires        = ("Resolver");
+        OrderPreference = "None";
+        Messages = {
+            start = "Starting uControl";
+            stop  = "Stopping uControl";
+        };
+    }
+    
+
+XML Property Lists
+------------------
+
+- Preferred
+- Dictionary serialization
+- Preference files (~/Library/Preferences)
+- Info.plist in every application bundle
+- New Nib files (GUI pickle)
+
+::
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+    <plist version="0.9">
+    <dict>
+        <key>CFBundleDevelopmentRegion</key>
+        <string>English</string>
+        <key>CFBundleDocumentTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleTypeOSTypes</key>
+                <array>
+                    <string>****</string>
+
+
+
+Apple's Property List Editor
+----------------------------
+
+.. image:: ../loginwindowplist.jpg
+
+plistlib Example
+----------------
+
+**Using plistlib to find the name of the last logged in user**::
+
+    >>> import plistlib
+    >>> filename = '/Library/Preferences/com.apple.loginwindow.plist'
+    >>> plist = plistlib.Plist.fromFile(file(filename))
+    >>> plist['lastUserName']
+    'bob'
+
+**Limitations**:
+
+- Only works for XML plist files!
+- Not very good at handling dates
+- Might not be unicode safe
+
+NSDictionary Example
+--------------------
+
+**Using PyObjC to find the name of the last logged in user**::
+
+    >>> from Foundation import NSDictionary
+    >>> filename = u'/Library/Preferences/com.apple.loginwindow.plist'
+    >>> plist = NSDictionary.dictionaryWithContentsOfFile_(filename)
+    >>> plist['lastUserName']
+    u'bob'
+
+**Limitations**:
+
+- Requires PyObjC to be installed
+- ... but PyObjC is awesome, so get it!
+
+Why Objective C
+---------------
+
+- Comes from NeXT
+- Apple has a lot of great frameworks that use it
+- ... like Cocoa and Foundation
+
+Objective C Portability
+-----------------------
+
+- The GNUStep project uses it too
+- ... and PyObjC is portable to GNUStep
+- GNUStep works on Win32
+- ... but doesn't have a decent backend
+
+What is Objective C
+-------------------
+
+- Mostly just C, but with [some new:syntax]
+- ... and a very dynamic runtime (sound familiar?)
+- Simpler than C++, similar to Smalltalk
+
+PyObjC
+------
+
+- Plays along VERY nicely with Python
+- ... if you have PyObjC, of course
+
+Bundles are like Packages
+-------------------------
+
+- They have a fixed directory structure
+- General purpose (documents, code, resources)
+- Localization features baked in
+- Most look like a single file from Finder
+- All applications should be bundles
+- ... and they need to be to use the GUI
+
+PackageManager.app, dissected
+-----------------------------
+
+.. image:: ../packmanbundle.jpg
+
+- Bootstrap code in MacOS folder
+- Python code and resources in Resources folder
+- Info.plist and PkgInfo are required metadata
+
+/usr/bin/pythonw
+----------------
+
+**The Way to run GUI scripts**
+
+- GUI-enabled scripts can use the pythonw command
+- ... it tricks WindowServer
+- ... pretends to be running from the Python application bundle
+- Unfortunately, not very useful for Cocoa applications
+
+bundlebuilder
+-------------
+
+**The Way to make Python-based Applications**
+... for now
+
+- Standard MacPython module
+- Similar in purpose to py2exe or freeze
+- Similar in API to distutils, but not (yet) integrated
+- Documented at the pythonmac.org wiki
+- ... but something better is coming soon
+
+Document Bundles
+----------------
+
+**Documents**
+
+- Interface Builder nibs
+- OmniGraffle
+- Keynote
+- TextEdit
+- ... most other Cocoa applications
+
+Code Bundles
+------------
+
+**Frameworks**
+
+- Versioned
+- Shared Libraries
+- Headers
+- Other data
+
+**Other Code**
+
+- StartupItems
+- Plugins
+- Preference Panes
+
+Apple Events
+------------
+
+.. image:: ../aehighlevel.jpg
+
+- What are Apple Evevnts?
+- Apple Script
+- Python and Apple Events
+
+What are Apple Events?
+----------------------
+
+- Interapplication Communication
+- Many, but not all, applications support it
+- Used primarily for automation tasks
+- Very old, low level
+- Difficult API
+- ... except from Apple Script
+- ... or from Cocoa
+
+Apple Script
+------------
+
+.. image:: ../applescript_simple.jpg
+
+- Looks easy enough, but it's not Python!
+- It's crufty, slow, and doesn't scale
+- One of the few "read only" languages ;)
+
+Python and Apple Events
+-----------------------
+
+Carbon
+    You may as well write it in assembly!
+gensuitemodule
+    Really old, has limitations, on its way out
+aeve
+    Pythonic bridge, development on hold
+appscript
+    Closer to Apple Script, actively developed
+
+appscript and Finder
+--------------------
+
+**The URL of the current user's Desktop**::
+
+    >>> from appscript import *
+    >>> finder = app('Finder.app')
+    >>> finder.desktop.URL.get()
+    u'file://localhost/Users/bob/Desktop/'
+
+appscript and iTunes
+--------------------
+
+**Finding the artist of the song "Python Patrol"**::
+
+    >>> from appscript import *
+    >>> library = app('iTunes.app').sources[1].playlists[1]
+    >>> mytrack = library.tracks.test(its.name == u'Python Patrol')[1]
+    >>> mytrack.artist.get()[0]
+    u'GI Joe Killaz'
+
+Cocoa
+-----
+
+.. image:: ../cocoa.jpg
+
+
+ReSTedit
+--------
+
+.. image:: ../ReSTedit.jpg
+
+Zope Edit Manager
+-----------------
+
+.. image:: ../ZopeEditManager.jpg
+
+DrawBot
+-------
+
+.. image:: ../DrawBot.jpg
+
+This Is What Happens
+--------------------
+
+.. image:: ../drawbot00.jpg
+
+When You Teach Python
+---------------------
+
+.. image:: ../drawbot01.jpg
+
+To Graphic Designers
+--------------------
+
+.. image:: ../drawbot02.jpg
+
+In A Simple Way
+---------------
+
+.. image:: ../drawbot03.jpg
+
+That They Understand
+--------------------
+
+.. image:: ../drawbot04.jpg
+
+PyInterpreter
+-------------
+
+.. image:: ../PyInterpreter.jpg
+
+It Really Is Easy
+-----------------
+
+**This is where you get to see me use Xcode**
+
+"Cross-Platform" Toolkits
+-------------------------
+
+**MOST OF THEM ARE NOT READY YET!**
+
+- Tkinter is buggy
+- PyQt is buggy
+- wxPython is buggy
+
+**So why not just use Cocoa, it's easy!**
+
+pygame
+------
+
+.. image:: ../pygame.jpg
+
+PyOpenGL
+--------
+
+.. image:: ../PyOpenGL.jpg
+
+wxPython
+--------
+
+.. image:: ../wxPython.jpg
+
+Tkinter
+-------
+
+.. image:: ../IDLETclTkAqua.jpg
+
+PyQt
+----
+
+**It's probably still building.**
+
+... but it does work.  somewhat.
+
+And of course, X11 is still ugly
+--------------------------------
+
+.. image:: ../WingIDE.jpg
+
+Community
+---------
+
+- pythonmac-sig
+- pythonmac.org
+- MacPython channel
+- Various blogs
+
+The Future
+----------
+
+**New tools!**
+
+Questions?
+----------
+
+**Go ahead, ask.**
