@@ -1,0 +1,274 @@
+TITLE OF PAPER: 60 Minutes of MacPython
+URL OF PRESENTATION: _URL_of_powerpoint_presentation_PRESENTED BY: Bob IppolitoREPRESENTING: _name_of_the_company_they_represent_
+
+CONFERENCE: PyCON 2004DATE: 20040326LOCATION: _venue_and_room_in_venue_
+--------------------------------------------------------------------------
+REAL-TIME NOTES / ANNOTATIONS OF THE PAPER:
+{If you've contributed, add your name, e-mail & URL at the bottom}
+
+Do you really care that you are using a Macintosh?
+
+
+What is MacPython
+    Python from CVS on Mac
+    Tools equivalent to an Activestate python
+
+
+MacPython's Past
+    Originally for Mac OS Classic
+
+    Guido used to own a Mac
+        then Jack Jansen took over
+    Uses WASTE for text widgets
+        and GUSI to act more like *NIX (from MacPerl)
+    Still exists but not as actively maintained
+    Some people are still using it
+
+MacPython Now
+    Has some rough edges
+    Inherits the good stuff from BSD
+    Has many new APIs of its own
+
+MacPython Tools
+    BuildApplet
+        turn scripts into applications
+    PackageManger
+        install few packages from a central db
+    PythonLauncher
+        Allows double-clicking of .py files
+    PythonIDE
+        Old MacOS IDE, unmaintained (written by Just van Rossum)
+... all of this are being replaced (to be replaced by Cocoa alternatives)
+
+How do I get it?
+    OS X 10.2
+        Don't use Apple Python 2.2.0
+        Get MacPython-Jaguar 2.3
+    OS X 10.3
+        Please use Apple Python 2.3.0
+        ... and don't install any other Python
+           may work if you don't install it (need to set ENV list)
+        Adding another Python tends to screw things up
+        Also get the MacPython-Addons
+
+MacPython IDEs
+     IDEs
+        Emacs
+        Vim
+        SubEthaEdit
+        Xcode
+            Python syntax highlight but not much else
+            Working on Xcode templates to make stuff easy
+            Working on Xcode based debugger
+        BBEdit
+        PythonIDE (via MacPython addons)
+            no highlighting
+            Unrecommended
+            has some debug tools
+        PyOXIDE
+            Cocoa based IDE
+            Code folding and syntax highlighting
+            debugger
+            very new and alpha, seems to have a future
+        X11 Python editors
+            WingIDE
+            which are ugly...
+
+Darwin
+    os.name == "posix" is True
+    So it is BSD!
+
+Not quite BSD
+    HFS+ Thinks different
+        case insensitive filesysetm
+        files can have multiple forks
+    Inherited from NeXT
+        XML property lists
+        Bundles and Frameworks
+            A documented directory structure, alternative to tarball, acts as a single file in Finder
+        dyld is not your average linker
+            Just let distutils deal with that
+        Tons of new APIs
+
+Forking Files
+    Resource forks are Not For POSIX
+        POSIX layer doesn't know about Resource Forks.
+        You need Carbon to read forks
+        Chance are, you will lose.
+    
+    But you can get at one if you need to:
+        file(filename + "../namedfork/rsrc")
+
+Property Lists
+    Binary
+        deprecated
+        object serialization
+    Text
+        deprecated
+        looks sort of like YAML
+    XML property list
+        preferred
+        Dictionary serializationn
+    Can use Apple's property list editor
+        APIs available 
+
+    plistlib available
+        Load a plist, acts like a Python Dictionary
+    NSDictionary is another way, using PyObjC
+
+Objective C
+    Portable (GNUStep uses it)
+    Mostly just C with [some new:syntax]
+    Plays nicely with Python using PyObjC
+    
+
+Bundles are like packages
+    Fixed directory structure
+    General purpose
+    Localization features baked in
+    Most loook like a single file in Finder
+    All applications should be bundles
+    ... they need to be in order to use the GUI
+    Structure
+        Bootstrap code in MacOS Folder
+        Python code and resources in Resources folder
+        Info.plist and metadata
+
+/usr/bin/pythonw
+    The way to run GUI scripts
+    tricks WindowServer
+        pretends to be running from the Python app bundle
+    Not useful for Cocoa applications
+
+bundlebuilder
+    Standard MacPython module
+    Similar in purpose to py2exe or freeze
+    Similar in API to distutiles, but not (yet) integrated
+    Documented on pythonmac.org wiki
+    Something better is coming soon
+
+Other bundles
+    Document Bundles
+    Code Bundles
+
+Apple Events
+    Interapplication communication
+    Used primarily for automation tasks
+    old and low level
+    difficult api
+        except from applescript or cocoa
+    Looks like English, but isn't!
+    Python and AE
+        Carbon
+        gensuite module
+        aeve
+            pythonic bridge, dev on hold
+        appscript
+            closer to applescript, actively developed
+        
+    a few exammples
+
+
+Cocoa
+    NeXT fwks ported to OSX
+    Apps
+        ReSTedit - 
+            restructured text editor
+            live preview
+        Zope Edit Manager
+        DrawBot (nifty 'cause the drawing stays vector)
+        PyInterpreter
+            in process interpreter
+    You can subclass an Objective C class and pass it back and Objective C doesn't know/care
+    Live demo
+        (not sure how to describe this...)
+        Sets up a Table in a window
+        Binds it to an NSArrayController
+        Writes a 3-liner to populate the Table with the contents of sys.modules (right?)
+
+Cross-platform Toolkits
+    TkInter is buggy
+        Messed up colors, etc.
+    PyQT is buggy
+        Works. Somewhat.
+    wxPython is buggy
+        uses Carbon widgets
+        doesn't use them quite correctly
+    why not use Cocoa
+    X11 is still ugly
+    pygame works!
+        pygame Aliens
+    pyOpenGL
+
+Community
+    pythonmac-sig
+        at Python.org
+    pythonmac.org
+        Very useful Wiki and FAQ
+    MacPython channel
+        iChat - CMD-G MacPython
+        Channel on AIM network
+    Various blogs
+
+What's next?
+    New Tools
+        They'll work
+        Written in Cocoa
+        Using PyObjC
+
+Q: Cross platform UI?
+A: Separate UI from other code, etc. Don't use xplat UI toolkits.
+
+Q: XCode templates when?
+A: tomorrow?
+
+Q: Does Apple help you?
+A: No, not yet, but someone just joined Apple, so we expect that to change...
+
+Q: Is the MVC the same as in NeXTStep?
+A: Yes. Also WebObjects.
+
+Q: documentation for developing GUI stuff for python
+A: Objective-C docs/Xcode help/pyobjc
+
+Q: Safari?
+A: Built on C++ and Objective C using a Konqueror core. You can use their HTML widget in your code.
+
+Q: Patching bugs in Apple 2.3.0?
+A: Under discussion... Working on it.
+
+--------------------------------------------------------------------------
+REFERENCES: {as documents / sites are referenced add them below}
+
+python-mac portal and wiki:
+                http://pythonmac.org/
+WebKit browser in one (actually zero) lines of code:
+                http://cocoadevcentral.com/articles/000077.php
+
+--------------------------------------------------------------------------
+QUOTES:
+
+
+
+--------------------------------------------------------------------------
+CONTRIBUTORS: {add your name, e-mail address and URL below}
+Ted Leung, twl@osafoundation.org, http://www.sauria.com/blog
+Abhay Saxena, ark3@email.com
+
+--------------------------------------------------------------------------
+E-MAIL BOUNCEBACK: {add your e-mail address separated by commas }
+
+
+
+--------------------------------------------------------------------------
+NOTES ON / KEY TO THIS TEMPLATE:
+A headline (like a field in a database) will be CAPITALISED
+    This differentiates from the text that follows
+A variable that you can change will be surrounded by _underscores_
+    Spaces in variables are also replaced with under_scores
+    This allows people to select the whole variable with a simple double-click
+A tool-tip is lower case and surrounded by {curly brackets / parentheses}
+    These supply helpful contextual information.
+
+--------------------------------------------------------------------------
+Copyright shared between all the participants unless otherwise stated...
